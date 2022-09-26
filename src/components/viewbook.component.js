@@ -32,17 +32,19 @@ function ViewBook() {
                       <strong className='h2'>{book.title}</strong>
                     </div>
                     <div className='row'>
-                      <div className="col pt-4">
+                      <div className="col-md-6 pt-4">
                         {book.desc}
                       </div>
-                      <div className="col pt-3 h4">
+                      <div className='col' style={{borderRight:"1px solid lightgrey"}}>
+                      </div>
+                      <div className="col-md-4 pt-3 h4">
                         <div className="col p-1">{book.author}</div>
                         <div className="col p-1">{book.category}</div>
                         <div className="col p-1">{book.published}</div>
                         <div className="col p-1"><Rating rating={book.rating}/></div>
                       </div>
                     </div>
-                    <div className="col">
+                    <div className="col pt-3">
                       {/* style this button!! */}
                       <button className='btn btn-primary' onClick={handleAddToCart}><FiShoppingCart/> Add to cart</button>
                     </div>
