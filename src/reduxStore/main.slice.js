@@ -99,6 +99,22 @@ const mainSlice= createSlice({
             state.username=null
             state.password=null
         },
+        addToCart:(state,action)=>{
+            let cartBook={...state.viewingBook}
+            console.log(cartBook)
+            if(state.cart.map(book=>book.title).includes(cartBook.title))
+            {
+                // handling duplicate cart items by incrementing its qty count
+                console.log(state.cart)
+                let bkInd=state.cart.findIndex(book=>book.title==cartBook.title)
+                state.cart[bkInd].qty++;
+            }else{
+                cartBook.qty=1
+                cartBook.subTotal=cartBook.price
+                state.cart=[...state.cart,cartBook]
+            }
+            console.log(state.cart)
+        },
         showMsg:(state,action)=>{
             switch (action.payload.type) {
                 case 'info':
@@ -151,7 +167,10 @@ const mainSlice= createSlice({
 })
 
 
-export const { setLoader,setViewBook,setAdmin,showMsg,setUserInfo,logout }=mainSlice.actions
+export const { setLoader,setViewBook,setAdmin,
+    showMsg,setUserInfo,logout,
+    addToCart
+ }=mainSlice.actions
 export default mainSlice.reducer
 
 // export const { addManga, delManga, replicateManga } = mangaSlice.actions;
