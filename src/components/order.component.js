@@ -1,8 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { getAllOrders } from '../reduxStore/main.slice'
+
 
 function Order() {
+  let dispatch=useDispatch()
+  let order=useSelector(state=>state.main.order)
+
+  useEffect(()=>{
+    dispatch(getAllOrders())
+  },[])
   return (
-    <div>Order</div>
+    <div>
+      {JSON.stringify(order)}
+    </div>
   )
 }
 

@@ -82,6 +82,8 @@ export const httpGetOrders=()=>{
 
 export const httpGetOrdersOfUser=(username)=>{
     if(!isProd){
+        console.log("err")
+        console.log(username)
         return promiseCreator(demoOrders.filter(order=>order.placedBy==username))
     }else{
         return makeGetReq('/getorder/'+username)

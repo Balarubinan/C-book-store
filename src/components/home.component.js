@@ -18,7 +18,7 @@ function Home() {
   useEffect(()=>{
     dispatch(getAllBooks())
     // comment below line after login implementation!
-    dispatch(validateLogin({username:"bala",password:"superbala"}))
+    dispatch(validateLogin({username:"jahnavi",password:"randompass"}))
   },[])
 
 

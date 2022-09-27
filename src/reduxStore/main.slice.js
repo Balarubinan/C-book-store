@@ -58,8 +58,9 @@ export const placeOrder=createAsyncThunk('/main/placeOrder',async (arg,{dispatch
 })
 
 export const getAllOrders=createAsyncThunk('/main/getAllOrders',async (arg,{dispatch,getState})=>{
-    let {isAdmin,username} = getState()
+    let {isAdmin,username} = getState().main
     let res=null
+    console.log(username)
     if(isAdmin)
         res=await httpGetOrders()
     else
@@ -87,7 +88,6 @@ const mainSlice= createSlice({
             state.viewingBook=action.payload
         },
         setUserInfo:(state,action)=>{
-            console.log("scllas")
             console.log(action.payload)
             state.username=action.payload.username
             state.password=action.payload.password

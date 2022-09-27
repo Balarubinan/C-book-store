@@ -40,9 +40,13 @@ function Cart() {
   }
 
   const handlePlaceOrder=()=>{
-    dispatch(setCartTotal(totalAmount))
-    dispatch(placeOrder())
-    dispatch(showMsg({msg:"Order Placed",type:"success"}))
+    if(cartItems.length>0){
+      dispatch(setCartTotal(totalAmount))
+      dispatch(placeOrder())
+      dispatch(showMsg({msg:"Order Placed",type:"success"}))
+    }else{
+      dispatch(showMsg({msg:"Add Items to order",type:"error"}))
+    }
   }
 
 
