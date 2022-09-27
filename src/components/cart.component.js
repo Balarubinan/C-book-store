@@ -2,9 +2,9 @@ import React from 'react'
 import '../App.css'
 import { useDispatch, useSelector } from 'react-redux'
 import Rating from './rating.component'
-import { addToCart, setViewBook, showMsg } from '../reduxStore/main.slice'
+import { addToCart, placeOrder, removeCartItem, setCartTotal, setViewBook, showMsg } from '../reduxStore/main.slice'
 import { useNavigate } from 'react-router-dom'
-import {HiOutlinePlusCircle,HiOutlineMinusCircle} from 'react-icons/hi'
+import {AiFillCloseCircle} from 'react-icons/ai'
 import {RiArrowDownSFill,RiArrowUpSFill} from "react-icons/ri"
 
 function Cart() {
@@ -36,7 +36,13 @@ function Cart() {
   }
 
   const handleRemoveItem=(title)=>{
+    dispatch(removeCartItem(title))
+  }
 
+  const handlePlaceOrder=()=>{
+    dispatch(setCartTotal(totalAmount))
+    dispatch(placeOrder())
+    dispatch(showMsg({msg:"Order Placed",type:"success"}))
   }
 
 
@@ -44,7 +50,8 @@ function Cart() {
   return (
     <div className='row p-4'>
       <div className="col-md-9">
-      {cartItems.map(({title,image,qty,price,subTotal,rating})=>(
+      {!cartItems.length>0&&<div className='h3 text-secondary'>No Items in Cart</div>}
+      {cartItems.length>0&&cartItems.map(({title,image,qty,price,subTotal,rating})=>(
       <div className="card p-2 ms-4 mb-2">
         <div className="row pb-2 ms-2">
           <div className="h3">
@@ -58,6 +65,7 @@ function Cart() {
           </div>
           <div className="col pt-5 h2">
             <div onClick={e=>handleIncQty(title)}>
+              {/* implement unkeydown and keyup and change btn colors! */}
               <RiArrowUpSFill/>
             </div>
             {qty}
@@ -76,8 +84,11 @@ function Cart() {
       </div>
       <div className="col-md-3">
         <div className="col sticky-top2">
-          <div className="card h3">
-            Total Amount : &#8377;{totalAmount}
+          <div className="card h3 p-3">
+            <div className='p-1'>Total Amount : &#8377;{totalAmount}<br/></div>
+            <div className='p-1'>
+            <button className='btn btn-primary' width="50px" onClick={handlePlaceOrder}>Place order</button>
+            </div>
           </div>
         </div>
       </div>

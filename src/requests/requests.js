@@ -1,9 +1,12 @@
 import axios from "axios";
 // import demoData from './data/demoData.json'
 import demoData from './data/demoDataWDesc.json'
+
 // import demoData from './data/demoDataLatest.json'
 
-const baseUrl="http://Server Url here"
+import demoDataOrders from './data/demoOrderData.json'
+
+const baseUrl="http://ServerUrlhere"
 
 const isProd=false
 
@@ -15,7 +18,7 @@ let demoBooks=demoData
 // order => id, status 
 
 // create an orders array here!
-let demoOrders=[]
+let demoOrders=demoDataOrders
 
 const promiseCreator=(data)=>{
     return new Promise((resolve,reject)=>{
@@ -77,6 +80,14 @@ export const httpGetOrders=()=>{
     }
 }
 
+export const httpGetOrdersOfUser=(username)=>{
+    if(!isProd){
+        return promiseCreator(demoOrders.filter(order=>order.placedBy==username))
+    }else{
+        return makeGetReq('/getorder/'+username)
+    }
+}
+
 export const httpUpdateOrderStatus=(orderId,status)=>{
     // status is default set to "pending" when order is made
     // admin can do "success" or "failure" on the admin portal
@@ -96,7 +107,7 @@ export const httpUpdateOrderStatus=(orderId,status)=>{
     }
 }
 
-export const httpPlaceOrder=(cartBooks,total)=>{
+export const httpPlaceOrder=(cartBooks,total,placedBy)=>{
     // a
     if(!isProd){
         let newOrder={
@@ -104,7 +115,9 @@ export const httpPlaceOrder=(cartBooks,total)=>{
             books:cartBooks,
             total:total,
             status:"pending",
+            placedBy:placedBy
         }
+        console.log(JSON.stringify(newOrder))
         demoOrders.push(newOrder)
         return promiseCreator({status:"success",id:newOrder.id})
     }else{
@@ -112,6 +125,7 @@ export const httpPlaceOrder=(cartBooks,total)=>{
             books:cartBooks,
             total:total,
             status:"pending",
+            placedBy:placedBy
         }
         // backend must generate id for the object and return it in response
         return makePostReq('/placeorder',{order:newOrder})

@@ -6,7 +6,8 @@ import {
     httpUpdateBook,
     httpUpdateOrderStatus,
     httpPlaceOrder,
-    httpValidateLogin
+    httpValidateLogin,
+    httpGetOrdersOfUser
 } from '../requests/requests'
 
 import NotificationManager from "react-notifications/lib/NotificationManager"
@@ -48,8 +49,21 @@ export const getAllBooks=createAsyncThunk('/main/getAllBooks',async ()=>{
     return res
 })
 
-export const getAllOrders=createAsyncThunk('/main/getAllOrders',async ()=>{
-    const res=await httpGetOrders()
+export const placeOrder=createAsyncThunk('/main/placeOrder',async (arg,{dispatch,getState})=>{
+    let {cart,cartTotal,username}=getState()
+    console.log("In place order")
+    const res=await httpPlaceOrder(cart,cartTotal,username)
+    console.log(res)
+    return res
+})
+
+export const getAllOrders=createAsyncThunk('/main/getAllOrders',async (arg,{dispatch,getState})=>{
+    let {isAdmin,username} = getState()
+    let res=null
+    if(isAdmin)
+        res=await httpGetOrders()
+    else
+        res=await httpGetOrdersOfUser(username)
     console.log(res)
     return res
 })
@@ -59,18 +73,6 @@ export const validateLogin=createAsyncThunk('main/validateLogin',async ({usernam
     const res=await httpValidateLogin(username,password)
     return res.status
 })
-
-// export const updateBook=createAsyncThunk('main/updateBook',async({bkTitle,modBook},{dispatch})=>{
-//     const res=await httpUpdateBook(bkTitle,modBook)
-//     return res
-// })
-
-// export const addBook=createAsyncThunk('main/',async({newBook},{dispatch})=>{
-//     const res=await httpAddBook(newBook)
-//     return res
-// })
-
-
 
 
 const mainSlice= createSlice({
@@ -98,6 +100,15 @@ const mainSlice= createSlice({
             state.isAdmin=false
             state.username=null
             state.password=null
+        },
+        setCartTotal:(state,action)=>{
+            state.cartTotal=action.payload
+        },
+        setOrders:(state,action)=>{
+            state.order=[...action.payload]
+        },
+        removeCartItem:(state,action)=>{
+            state.cart=state.cart.filter(cartBook=>cartBook.title!=action.payload)
         },
         addToCart:(state,action)=>{
             let cartBook={...state.viewingBook}
@@ -165,13 +176,19 @@ const mainSlice= createSlice({
             .addCase(getAllOrders.fulfilled,(state,action)=>{
                 state.order=action.payload
             })
+            .addCase(placeOrder.fulfilled,(state,action)=>{
+                state.cart=[]
+                state.cartTotal=null
+                console.log(action.payload)
+            })
     }
 })
 
 
 export const { setLoader,setViewBook,setAdmin,
     showMsg,setUserInfo,logout,
-    addToCart
+    addToCart,setCartTotal,setOrders,
+    removeCartItem
  }=mainSlice.actions
 export default mainSlice.reducer
 
