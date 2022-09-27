@@ -102,12 +102,14 @@ const mainSlice= createSlice({
         addToCart:(state,action)=>{
             let cartBook={...state.viewingBook}
             console.log(cartBook)
+            let adder=action?.payload?.adder||1
             if(state.cart.map(book=>book.title).includes(cartBook.title))
             {
                 // handling duplicate cart items by incrementing its qty count
                 console.log(state.cart)
                 let bkInd=state.cart.findIndex(book=>book.title==cartBook.title)
-                state.cart[bkInd].qty++;
+                state.cart[bkInd].qty+=adder;
+                state.cart[bkInd].subTotal+=(state.cart[bkInd].price*adder)
             }else{
                 cartBook.qty=1
                 cartBook.subTotal=cartBook.price

@@ -6,10 +6,7 @@ import {useNavigate} from 'react-router-dom'
 import { addToCart, showMsg } from '../reduxStore/main.slice'
 
 function ViewBook() {
-  // show book details
-  // quatity change
-  // on add show success message and goto home page
-  // show total and sub total values
+  
   let navig=useNavigate()
   let dispatch=useDispatch()
   let book=useSelector(state=>state.main.viewingBook)
