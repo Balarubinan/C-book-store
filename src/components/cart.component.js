@@ -53,9 +53,13 @@ function Cart() {
       {!cartItems.length>0&&<div className='h3 text-secondary'>No Items in Cart</div>}
       {cartItems.length>0&&cartItems.map(({title,image,qty,price,subTotal,rating})=>(
       <div className="card p-2 ms-4 mb-2">
-        <div className="row pb-2 ms-2">
+        <div className="col pb-2 ms-2">
           <div className="h3">
             {title}
+            <AiFillCloseCircle 
+              style={{position:"absolute",right:"0px"}} 
+              onClick={e=>handleRemoveItem(title)} 
+            />
           </div>
         </div>
         <div className="row h-100">
