@@ -138,7 +138,16 @@ export const httpValidateLogin=(username,password)=>{
     if(!isProd){
         return promiseCreator({status:"success"})
     }else{
-        return makeGetReq("/validate",{username:username,password:password})
+        return makePostReq("/validate",{username:username,password:password})
+    }
+}
+
+export const httpRegisterUser=(username,password)=>{
+    if(!isProd){
+        // push user to the user demo array maybe????
+        return promiseCreator({status:"success"})
+    }else{
+        return makePostReq("/registeruser",{username:username,password:password})
     }
 }
 

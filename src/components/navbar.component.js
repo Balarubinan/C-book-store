@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector,useDispatch} from 'react-redux'
 import { logout } from '../reduxStore/main.slice'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import {FiHome,FiShoppingCart,FiBell} from 'react-icons/fi'
 import {RiLogoutBoxLine,RiLoginBoxLine,RiUserLine} from 'react-icons/ri'
 
@@ -13,9 +13,12 @@ function NavBar() {
   const isAdmin=useSelector(state=>state.main.isAdmin)
   const username=useSelector(state=>state.main.username)
   const linkClass="nav-item nav-link active"
+  const navig=useNavigate()
 
   const handleLogout=()=>{
     dispatch(logout())
+    navig('/')
+    // handle this and return to building register page yyou dumb shit!!
   }
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top p-2 ">

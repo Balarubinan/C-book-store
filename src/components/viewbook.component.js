@@ -10,6 +10,7 @@ function ViewBook() {
   let navig=useNavigate()
   let dispatch=useDispatch()
   let book=useSelector(state=>state.main.viewingBook)
+  let isLoggedIn=useSelector(state=>state.main.isLoggedIn)
 
   const handleAddToCart=()=>{
     dispatch(addToCart())
@@ -43,7 +44,7 @@ function ViewBook() {
                     </div>
                     <div className="col pt-3">
                       {/* style this button!! */}
-                      <button className='btn btn-primary' onClick={handleAddToCart}><FiShoppingCart/> Add to cart</button>
+                      <button className='btn btn-primary' onClick={handleAddToCart} disabled={!isLoggedIn}><FiShoppingCart/> Add to cart</button>
                     </div>
                   </div>
                 </div>

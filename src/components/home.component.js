@@ -12,13 +12,10 @@ function Home() {
 
   const searchBarOnChange=(e)=>{
     setQueryString(e.target.value.toLowerCase())
-    console.log("Shcnag")
   }
 
   useEffect(()=>{
     dispatch(getAllBooks())
-    // comment below line after login implementation!
-    dispatch(validateLogin({username:"jahnavi",password:"randompass"}))
   },[])
 
 

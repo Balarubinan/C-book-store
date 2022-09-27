@@ -7,7 +7,8 @@ import {
     httpUpdateOrderStatus,
     httpPlaceOrder,
     httpValidateLogin,
-    httpGetOrdersOfUser
+    httpGetOrdersOfUser,
+    httpRegisterUser
 } from '../requests/requests'
 
 import NotificationManager from "react-notifications/lib/NotificationManager"
@@ -74,6 +75,11 @@ export const validateLogin=createAsyncThunk('main/validateLogin',async ({usernam
     dispatch(setUserInfo({username:username,password:password}))
     const res=await httpValidateLogin(username,password)
     return res.status
+})
+
+export const registerUser=createAsyncThunk('main/registerUser',async ({username,password})=>{
+    const res=await httpRegisterUser(username,password)
+    return res
 })
 
 
@@ -188,6 +194,9 @@ const mainSlice= createSlice({
                 state.cartTotal=null
                 console.log(action.payload)
             })
+            .addCase(registerUser.fulfilled,(state)=>{
+                console.log("User register done!")
+            })
     }
 })
 
@@ -195,7 +204,8 @@ const mainSlice= createSlice({
 export const { setLoader,setViewBook,setAdmin,
     showMsg,setUserInfo,logout,
     addToCart,setCartTotal,setOrders,
-    removeCartItem,setCartItems,toggleDisplayMode
+    removeCartItem,setCartItems,toggleDisplayMode,
+    
  }=mainSlice.actions
 export default mainSlice.reducer
 
