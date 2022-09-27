@@ -23,6 +23,7 @@ const initalState={
     viewingBook:null,
     cartTotal:null,
     loading:false,
+    displayMode:false
 
     // cartItem => book props+qty+subtotal
     // order    => info+cartItemsprops+status+
@@ -84,6 +85,9 @@ const mainSlice= createSlice({
         setLoader:(state,action)=>{
             state.loading=action.payload
         },
+        toggleDisplayMode:(state)=>{
+            state.displayMode=!state.displayMode
+        },
         setViewBook:(state,action)=>{
             state.viewingBook=action.payload
         },
@@ -106,6 +110,9 @@ const mainSlice= createSlice({
         },
         setOrders:(state,action)=>{
             state.order=[...action.payload]
+        },
+        setCartItems:(state,action)=>{
+            state.cart=action.payload
         },
         removeCartItem:(state,action)=>{
             state.cart=state.cart.filter(cartBook=>cartBook.title!=action.payload)
@@ -188,7 +195,7 @@ const mainSlice= createSlice({
 export const { setLoader,setViewBook,setAdmin,
     showMsg,setUserInfo,logout,
     addToCart,setCartTotal,setOrders,
-    removeCartItem
+    removeCartItem,setCartItems,toggleDisplayMode
  }=mainSlice.actions
 export default mainSlice.reducer
 

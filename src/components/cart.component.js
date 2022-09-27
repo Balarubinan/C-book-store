@@ -7,11 +7,11 @@ import { useNavigate } from 'react-router-dom'
 import {AiFillCloseCircle} from 'react-icons/ai'
 import {RiArrowDownSFill,RiArrowUpSFill} from "react-icons/ri"
 
-function Cart() {
+function Cart(props) {
   // &#8377; is ruppess symbol
+  let orderDisplayMode=props.orderMode||false
   let cartItems=useSelector(state=>state.main.cart)
   let totalAmount=useSelector(state=>state.main.cart.reduce((ttl,cartBook,i)=>ttl+cartBook.subTotal,0))
-  let qtyOfViewingBook=useSelector(state=>state.main.viewingBook.qty)
 
 
   let dispatch=useDispatch()
@@ -28,8 +28,9 @@ function Cart() {
   }
 
   const handleDecQty=(title)=>{
-    dispatch(setViewBook(cartItems.find(book=>book.title==title)))
-    if(qtyOfViewingBook-1>1)
+    let modBook=cartItems.find(book=>book.title==title)
+    dispatch(setViewBook(modBook))
+    if(modBook.qty-1>1)
       dispatch(addToCart({adder:-1}))
     else
       dispatch(showMsg({msg:"Atleast one item needed",type:"error"}))
@@ -60,10 +61,10 @@ function Cart() {
         <div className="col pb-2 ms-2">
           <div className="h3">
             {title}
-            <AiFillCloseCircle 
+            {!orderDisplayMode&&<AiFillCloseCircle 
               style={{position:"absolute",right:"0px"}} 
               onClick={e=>handleRemoveItem(title)} 
-            />
+            />}
           </div>
         </div>
         <div className="row h-100">
@@ -73,12 +74,11 @@ function Cart() {
           </div>
           <div className="col pt-5 h2">
             <div onClick={e=>handleIncQty(title)}>
-              {/* implement unkeydown and keyup and change btn colors! */}
-              <RiArrowUpSFill/>
+              {!orderDisplayMode&&<RiArrowUpSFill/>}
             </div>
             {qty}
             <div onClick={e=>handleDecQty(title)}>
-              <RiArrowDownSFill/>
+              {!orderDisplayMode&&<RiArrowDownSFill/>}
             </div>
           </div>
           <div className="col pt-5 h2">
@@ -95,7 +95,7 @@ function Cart() {
           <div className="card h3 p-3">
             <div className='p-1'>Total Amount : &#8377;{totalAmount}<br/></div>
             <div className='p-1'>
-            <button className='btn btn-primary' width="50px" onClick={handlePlaceOrder}>Place order</button>
+            {!orderDisplayMode&&<button className='btn btn-primary' width="50px" onClick={handlePlaceOrder}>Place order</button>}
             </div>
           </div>
         </div>
