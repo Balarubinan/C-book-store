@@ -8,7 +8,8 @@ import {
     httpPlaceOrder,
     httpValidateLogin,
     httpGetOrdersOfUser,
-    httpRegisterUser
+    httpRegisterUser,
+    httpCancelOrder
 } from '../requests/requests'
 
 import NotificationManager from "react-notifications/lib/NotificationManager"
@@ -24,7 +25,8 @@ const initalState={
     viewingBook:null,
     cartTotal:null,
     loading:false,
-    displayMode:false
+    displayMode:false,
+    userAddress:null
 
     // cartItem => book props+qty+subtotal
     // order    => info+cartItemsprops+status+
@@ -52,11 +54,16 @@ export const getAllBooks=createAsyncThunk('/main/getAllBooks',async ()=>{
 })
 
 export const placeOrder=createAsyncThunk('/main/placeOrder',async (arg,{dispatch,getState})=>{
-    let {cart,cartTotal,username}=getState()
+    let {cart,cartTotal,username,userAddress}=getState().main
     console.log("In place order")
-    const res=await httpPlaceOrder(cart,cartTotal,username)
+    const res=await httpPlaceOrder(cart,cartTotal,username,userAddress)
     console.log(res)
     return res
+})
+
+export const cancelOrder=createAsyncThunk('/main/cancelOrder',async({id})=>{
+    const res=await httpCancelOrder(id)
+    return {...res,id:id}
 })
 
 export const getAllOrders=createAsyncThunk('/main/getAllOrders',async (arg,{dispatch,getState})=>{
@@ -113,6 +120,9 @@ const mainSlice= createSlice({
         },
         setCartTotal:(state,action)=>{
             state.cartTotal=action.payload
+        },
+        setUserAddress:(state,action)=>{
+            state.userAddress=action.payload
         },
         setOrders:(state,action)=>{
             state.order=[...action.payload]
@@ -192,10 +202,15 @@ const mainSlice= createSlice({
             .addCase(placeOrder.fulfilled,(state,action)=>{
                 state.cart=[]
                 state.cartTotal=null
+                console.log("fullfilled places ")
                 console.log(action.payload)
             })
             .addCase(registerUser.fulfilled,(state)=>{
                 console.log("User register done!")
+            })
+            .addCase(cancelOrder.fulfilled,(state,action)=>{
+                state.order=state.order.filter(order=>order.id!=action.payload.id)
+                console.log("Order cancleed!")
             })
     }
 })
@@ -205,6 +220,7 @@ export const { setLoader,setViewBook,setAdmin,
     showMsg,setUserInfo,logout,
     addToCart,setCartTotal,setOrders,
     removeCartItem,setCartItems,toggleDisplayMode,
+    setUserAddress
     
  }=mainSlice.actions
 export default mainSlice.reducer

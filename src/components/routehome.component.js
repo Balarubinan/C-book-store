@@ -19,12 +19,9 @@ function RouteHome() {
     useEffect(()=>{
         // loading var does change...but it's too fast
         // for the UI to register
-        
     // comment below line after login implementation!
-        // dispatch(validateLogin({username:"jahnavi",password:"randompass"}))
-
-        console.log("haha loading var changed!!")
-    },[loading])
+        dispatch(validateLogin({username:"jahnavi",password:"randompass"}))
+    },[])
     return (
         <div>
             <NavBar/>

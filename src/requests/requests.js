@@ -20,6 +20,22 @@ let demoBooks=demoData
 // create an orders array here!
 let demoOrders=demoDataOrders
 
+const loadFromLocalStorage=()=>{
+    let orders=localStorage.getItem('orders')
+    if(orders)
+        demoOrders=JSON.parse(orders)
+    else
+        localStorage.setItem('orders',JSON.stringify(demoOrders))
+
+    console.log(demoOrders)
+}
+
+const updateLocalStore=()=>{
+    localStorage.setItem('orders',JSON.stringify(demoOrders))
+}
+
+loadFromLocalStorage()
+
 const promiseCreator=(data)=>{
     return new Promise((resolve,reject)=>{
         resolve(data)
@@ -84,6 +100,7 @@ export const httpGetOrdersOfUser=(username)=>{
     if(!isProd){
         console.log("err")
         console.log(username)
+        demoOrders.sort((a,b)=>b.id-a.id)
         return promiseCreator(demoOrders.filter(order=>order.placedBy==username))
     }else{
         return makeGetReq('/getorder/'+username)
@@ -109,28 +126,46 @@ export const httpUpdateOrderStatus=(orderId,status)=>{
     }
 }
 
-export const httpPlaceOrder=(cartBooks,total,placedBy)=>{
+export const httpPlaceOrder=(cartBooks,total,placedBy,address)=>{
     // a
+    console.log(cartBooks)
+    console.log("Place order req!")
     if(!isProd){
         let newOrder={
             id:Date.now(),
             books:cartBooks,
             total:total,
             status:"pending",
-            placedBy:placedBy
+            placedBy:placedBy,
+            address:address,
+            random:"HEllloo"
         }
+        console.log("Chekc"+" "+JSON.stringify(newOrder))
         console.log(JSON.stringify(newOrder))
         demoOrders.push(newOrder)
+        updateLocalStore()
         return promiseCreator({status:"success",id:newOrder.id})
     }else{
         let newOrder={
             books:cartBooks,
             total:total,
             status:"pending",
-            placedBy:placedBy
+            placedBy:placedBy,
+            address:address
         }
         // backend must generate id for the object and return it in response
         return makePostReq('/placeorder',{order:newOrder})
+    }
+}
+
+
+export const httpCancelOrder=(id)=>{
+    if(!isProd){
+        demoOrders=demoOrders.filter(order=>order.id!=id)
+        updateLocalStore()
+        return promiseCreator({status:"success"})
+    }else{
+        return makePostReq("/cancelorder",{id:id})
     }
 }
 

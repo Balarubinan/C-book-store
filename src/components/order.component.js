@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getAllOrders, setCartItems, toggleDisplayMode } from '../reduxStore/main.slice'
+import { cancelOrder, getAllOrders, setCartItems, toggleDisplayMode } from '../reduxStore/main.slice'
 import '../App.css'
 import { useNavigate } from 'react-router-dom'
 import Cart from './cart.component'
@@ -15,13 +15,14 @@ function Order() {
 
   const handleViewOrder=(id)=>{
     let orderToView=orders.find(order=>order.id==id)
+    console.log(orderToView)
     setCurBooks(orderToView.books)
     setId(orderToView.id)
     // dispatch(setCartItems(orders.find(order=>order.id==id).books))
   }
 
   const handleCancelOrder=(id)=>{
-    // to implement
+    dispatch(cancelOrder({id:id}))
   }
 
   useEffect(()=>{
@@ -32,10 +33,11 @@ function Order() {
   return (
     <div className='row'>
       {id&&curBooks&&<Cart orderMode={true} cartItems={curBooks}/>}
-      <div  className='h3 pt-3'>
+      {orders.length>0&&<div  className='h3 pt-3'>
         YOUR ORDERS
-      </div>
+      </div>}
       <div className="col">
+        {!orders.length>0&&<div className='h3 text-secondary p-4'>No orders</div>}
         {orders.map(({id,status,books,placedBy,total})=>(
           <div className="col">
             <div className={"mt-2 order-elem order-"+status}>
