@@ -21,7 +21,7 @@ function RouteHome() {
         // loading var does change...but it's too fast
         // for the UI to register
     // comment below line after login implementation!
-        dispatch(validateLogin({username:"admin",password:"randompass"}))
+        dispatch(validateLogin({username:"admin",password:"admin"}))
     },[])
     return (
         <div>
@@ -33,7 +33,8 @@ function RouteHome() {
                 <Route path="/order" element={ <Order/> } />
                 <Route path="/viewbook" element={<ViewBook/>}/>
                 <Route path="/register" element={<Register/>}/>
-                <Route path="/addbook" element={<AddBook/>}/>
+                <Route path="/addbook" element={<AddBook modify={false}/>}/>
+                <Route path="/modifybook" element={<AddBook modify={true}/>}/>
             </Routes>
         </div>
     )

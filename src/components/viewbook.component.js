@@ -4,7 +4,7 @@ import Rating from './rating.component'
 import {FiShoppingCart} from 'react-icons/fi'
 import {AiFillDelete,AiFillEdit} from 'react-icons/ai'
 import {useNavigate} from 'react-router-dom'
-import { addToCart, showMsg } from '../reduxStore/main.slice'
+import { addToCart, deleteBook, showMsg } from '../reduxStore/main.slice'
 
 function ViewBook() {
   
@@ -20,11 +20,13 @@ function ViewBook() {
   }
 
   const handleDeleteBook=()=>{
-
+    dispatch(deleteBook({title:book.title}))
+    dispatch(showMsg({msg:"Book deleted",type:"success"}))
+    navig('/')
   }
 
   const handleModifyBook=()=>{
-
+    navig('/modifybook')
   }
 
   useEffect(()=>{

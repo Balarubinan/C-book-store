@@ -115,6 +115,16 @@ export const httpUpdateBook=(bkTitle,modBook)=>{
     }
 }
 
+export const httpDeleteBook=(title)=>{
+    if(!isProd){
+        demoBooks=demoBooks.filter(book=>book.title!=title)
+        updateLocalStore()
+        return promiseCreator({status:"success"})
+    }else{
+        return makePostReq('/deletebook',{title:title})
+    }
+}
+
 export const httpGetOrders=()=>{
     if(!isProd){
         return promiseCreator(demoOrders)

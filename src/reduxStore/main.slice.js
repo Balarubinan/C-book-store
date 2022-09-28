@@ -9,10 +9,12 @@ import {
     httpValidateLogin,
     httpGetOrdersOfUser,
     httpRegisterUser,
-    httpCancelOrder
+    httpCancelOrder,
+    httpDeleteBook
 } from '../requests/requests'
 
 import NotificationManager from "react-notifications/lib/NotificationManager"
+import { create } from "json-server"
 
 const initalState={
     isAdmin:false,
@@ -86,6 +88,21 @@ export const validateLogin=createAsyncThunk('main/validateLogin',async ({usernam
 
 export const registerUser=createAsyncThunk('main/registerUser',async ({username,password})=>{
     const res=await httpRegisterUser(username,password)
+    return res
+})
+
+export const deleteBook=createAsyncThunk('/main/deleteBook',async ({title})=>{
+    const res=await httpDeleteBook(title)
+    return {...res,title:title}
+})
+
+export const saveBook=createAsyncThunk('/main/modifyBook',async ({modTitle,modBook,modified},{dispatch})=>{
+    let res=null
+    if(modified)
+        res=await httpUpdateBook(modTitle,modBook)
+    else
+        res=await httpAddBook(modBook)
+    dispatch(showMsg({msg:"Book catalog updated refresh",type:"info"}))
     return res
 })
 
@@ -213,6 +230,13 @@ const mainSlice= createSlice({
             .addCase(cancelOrder.fulfilled,(state,action)=>{
                 state.order=state.order.filter(order=>order.id!=action.payload.id)
                 console.log("Order cancleed!")
+            })
+            .addCase(deleteBook.fulfilled,(state,action)=>{
+                state.books=state.books.filter(book=>book.title!=action.payload.title)
+                console.log("Book deleted "+action.payload.title)
+            })
+            .addCase(saveBook.fulfilled,(state,action)=>{
+                console.log("Saved ")
             })
     }
 })

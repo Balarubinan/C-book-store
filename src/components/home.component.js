@@ -46,11 +46,12 @@ function Home() {
       />
         </div>
         <div className='row pt-4'>
+          {/* this shows all the books in the category even if one of it is matched */}
           {books&&books
             .filter(bookFilter)
             .map(book=>book.category)
             .filter((e,i,a)=>a.indexOf(e)===i)
-            .map(category=><CategoryBar category={category} key={category}/>)}
+            .map(category=><CategoryBar category={category} key={category} bookFilter={bookFilter} />)}
         </div>
     </div>
   )
