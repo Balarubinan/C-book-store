@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { cancelOrder, getAllOrders, setCartItems, toggleDisplayMode } from '../reduxStore/main.slice'
+import { cancelOrder, getAllOrders, setCartItems, showMsg, toggleDisplayMode } from '../reduxStore/main.slice'
 import '../App.css'
 import { useNavigate } from 'react-router-dom'
 import Cart from './cart.component'
@@ -23,6 +23,7 @@ function Order() {
 
   const handleCancelOrder=(id)=>{
     dispatch(cancelOrder({id:id}))
+    dispatch(showMsg({msg:"order cancelled",type:"info"}))
   }
 
   useEffect(()=>{

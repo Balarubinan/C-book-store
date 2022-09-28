@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Rating from './rating.component'
 import {FiShoppingCart} from 'react-icons/fi'
+import {AiFillDelete,AiFillEdit} from 'react-icons/ai'
 import {useNavigate} from 'react-router-dom'
 import { addToCart, showMsg } from '../reduxStore/main.slice'
 
@@ -10,14 +11,31 @@ function ViewBook() {
   let navig=useNavigate()
   let dispatch=useDispatch()
   let book=useSelector(state=>state.main.viewingBook)
+  let isAdmin=useSelector(state=>state.main.isAdmin)
   let isLoggedIn=useSelector(state=>state.main.isLoggedIn)
 
   const handleAddToCart=()=>{
     dispatch(addToCart())
     dispatch(showMsg({msg:"Book added",type:"success"}))
   }
+
+  const handleDeleteBook=()=>{
+
+  }
+
+  const handleModifyBook=()=>{
+
+  }
+
+  useEffect(()=>{
+    //handling refreshes
+    if(!book)
+      navig('/')
+  })
+
   return (
-    <div class="container h-100" style={{marginTop:"100px"}}>
+    <>
+    {book&&<div class="container h-100" style={{marginTop:"100px"}}>
         <div class="row h-100">
             <div class="col-md-12">
               <div className="card pt-2 pb-2">
@@ -43,15 +61,21 @@ function ViewBook() {
                       </div>
                     </div>
                     <div className="col pt-3">
-                      {/* style this button!! */}
-                      <button className='btn btn-primary' onClick={handleAddToCart} disabled={!isLoggedIn}><FiShoppingCart/> Add to cart</button>
+                      {!isAdmin&&
+                      <button className='btn btn-primary ms-3' onClick={handleAddToCart} disabled={!isLoggedIn}><FiShoppingCart/> Add to cart</button>
+                      }
+                      {isAdmin&&<div>
+                        <button className='btn btn-primary ms-3' onClick={handleDeleteBook} disabled={!isLoggedIn}><AiFillDelete/>Delete Book</button>
+                      <button className='btn btn-primary ms-3' onClick={handleModifyBook} disabled={!isLoggedIn}><AiFillEdit/>Edit Book</button>
+                      </div>
+                      }
                     </div>
                   </div>
                 </div>
               </div>
             </div>
         </div>
-    </div>
+    </div>}</>
   )
 }
 

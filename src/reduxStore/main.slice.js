@@ -81,7 +81,7 @@ export const getAllOrders=createAsyncThunk('/main/getAllOrders',async (arg,{disp
 export const validateLogin=createAsyncThunk('main/validateLogin',async ({username,password},{dispatch})=>{
     dispatch(setUserInfo({username:username,password:password}))
     const res=await httpValidateLogin(username,password)
-    return res.status
+    return res
 })
 
 export const registerUser=createAsyncThunk('main/registerUser',async ({username,password})=>{
@@ -188,7 +188,9 @@ const mainSlice= createSlice({
                 state.books=null
             })
             .addCase(validateLogin.fulfilled,(state,action)=>{
-                state.isLoggedIn=action.payload=="success"?true:false
+                let {status,isAdmin}=action.payload
+                state.isLoggedIn=status=="success"?true:false
+                state.isAdmin=isAdmin
                 console.log("im herhe"+JSON.stringify(action.payload))
             })
             .addCase(validateLogin.rejected,(state,action)=>{

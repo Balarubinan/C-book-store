@@ -11,6 +11,7 @@ import ViewBook from './viewbook.component'
 import Home from './home.component'
 import Login from './login.component'
 import Register from './register.component'
+import AddBook from './admin-addbook.component'
 
 
 function RouteHome() {
@@ -20,7 +21,7 @@ function RouteHome() {
         // loading var does change...but it's too fast
         // for the UI to register
     // comment below line after login implementation!
-        // dispatch(validateLogin({username:"jahnavi",password:"randompass"}))
+        dispatch(validateLogin({username:"admin",password:"randompass"}))
     },[])
     return (
         <div>
@@ -32,6 +33,7 @@ function RouteHome() {
                 <Route path="/order" element={ <Order/> } />
                 <Route path="/viewbook" element={<ViewBook/>}/>
                 <Route path="/register" element={<Register/>}/>
+                <Route path="/addbook" element={<AddBook/>}/>
             </Routes>
         </div>
     )

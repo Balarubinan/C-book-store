@@ -12,6 +12,12 @@ const isProd=false
 
 let demoBooks=demoData
 
+let demoUsers=[
+    {username:"admin",password:"admin"},
+    {username:"jahnavi",password:"jahnavi"},
+    {username:"dharshini",password:"dharshini"}
+]
+
 // book=>
 
 
@@ -20,21 +26,40 @@ let demoBooks=demoData
 // create an orders array here!
 let demoOrders=demoDataOrders
 
-const loadFromLocalStorage=()=>{
+const loadOrdersFromLocal=()=>{
     let orders=localStorage.getItem('orders')
     if(orders)
         demoOrders=JSON.parse(orders)
     else
         localStorage.setItem('orders',JSON.stringify(demoOrders))
-
     console.log(demoOrders)
+}
+
+const loadBooksFromLocal=()=>{
+    let books=localStorage.getItem('books')
+    if(books)
+        demoBooks=JSON.parse(books)
+    else
+        localStorage.setItem('books',JSON.stringify(demoBooks))
+}
+
+const loadUsersFromLocal=()=>{
+    let users=localStorage.getItem('users')
+    if(users)
+        demoUsers=JSON.parse(users)
+    else
+        localStorage.setItem('users',JSON.stringify(demoUsers))
 }
 
 const updateLocalStore=()=>{
     localStorage.setItem('orders',JSON.stringify(demoOrders))
+    localStorage.setItem('books',JSON.stringify(demoBooks))
+    localStorage.setItem('users',JSON.stringify(demoUsers))
 }
 
-loadFromLocalStorage()
+loadOrdersFromLocal()
+loadBooksFromLocal()
+loadUsersFromLocal()
 
 const promiseCreator=(data)=>{
     return new Promise((resolve,reject)=>{
@@ -63,6 +88,7 @@ export const httpGetBooks=()=>{
 export const httpAddBook=(newBook)=>{
     if(!isProd){
         demoBooks.push(newBook)
+        updateLocalStore()
         return promiseCreator({status:"success"})
     }else{
         // check if same title exists on backend!
@@ -77,11 +103,12 @@ export const httpUpdateBook=(bkTitle,modBook)=>{
     // so use modBook.title to access it and set the new values there
 
     if(!isProd){
-        demoBooks.map(book=>{
+        demoBooks=demoBooks.map(book=>{
             if(book.title==bkTitle)
             return modBook
             return book
         })
+        updateLocalStore()
         return promiseCreator({status:"success"})
     }else{
         return makePostReq('/updatebook',modBook)
@@ -113,13 +140,14 @@ export const httpUpdateOrderStatus=(orderId,status)=>{
     // here it is true:succes and false:failure
 
     if(!isProd){
-        demoOrders.map(order=>{
+        demoOrders=demoOrders.map(order=>{
             if(order.id==orderId){
                 order.status=status?"success":"failure"
                 return order
             }
             return order
         })
+        updateLocalStore()
         return promiseCreator({status:"success"})
     }else{
         return makePostReq('/updateorder',{orderId:orderId,status:status})
@@ -171,7 +199,9 @@ export const httpCancelOrder=(id)=>{
 
 export const httpValidateLogin=(username,password)=>{
     if(!isProd){
-        return promiseCreator({status:"success"})
+        let ifExists=demoUsers.find(user=>user.username==username&&user.password==password)
+        let returnObj={status:ifExists?"success":"invalid",isAdmin:username=="admin"}
+        return promiseCreator(returnObj)
     }else{
         return makePostReq("/validate",{username:username,password:password})
     }
@@ -180,6 +210,8 @@ export const httpValidateLogin=(username,password)=>{
 export const httpRegisterUser=(username,password)=>{
     if(!isProd){
         // push user to the user demo array maybe????
+        demoUsers.push({username:username,password:password})
+        updateLocalStore()
         return promiseCreator({status:"success"})
     }else{
         return makePostReq("/registeruser",{username:username,password:password})
