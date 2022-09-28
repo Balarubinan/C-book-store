@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {BsPlusCircle} from 'react-icons/bs'
-import { saveBook } from '../reduxStore/main.slice'
+import { saveBook, showMsg } from '../reduxStore/main.slice'
 
 function AddBook(props) {
 
@@ -10,7 +10,7 @@ function AddBook(props) {
   let modify=props.modify
   let loadBook=useSelector(state=>state.main.viewingBook)
   let [tempBook,setTempBook]=useState(
-    loadBook?{...loadBook}:{
+    loadBook&&modify?{...loadBook}:{
       "title": "",
       "author":"",
       "published":"",
@@ -24,12 +24,13 @@ function AddBook(props) {
   )
 
   // saving this bcoz it acts as a key for the old book record
-  let originalTitle=loadBook.title
+  let originalTitle=tempBook.title
   
 
   const handleFieldChange=(e,fieldName,prevValue)=>{
     let modTemp={...tempBook}
-    modTemp[fieldName]=typeof prevValue!="number"?e.target.value:parseInt(e.target.value)
+    // modTemp[fieldName]=typeof prevValue!="number"?e.target.value:parseInt(e.target.value)
+    modTemp[fieldName]=e.target.value
     setTempBook(modTemp)
   }
 
@@ -44,7 +45,13 @@ function AddBook(props) {
     })
     dispatch(saveBook({
       modTitle:originalTitle!=''?originalTitle:tempBook.title,
-      modBook:tempBook,
+      modBook:{
+        ...tempBook,
+        published:+tempBook.published,
+        price:+tempBook.price,
+        stock:+tempBook.stock,
+        rating:+tempBook.rating
+      },
       modified:modify
     }))
   }
