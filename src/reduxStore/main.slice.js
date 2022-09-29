@@ -15,7 +15,7 @@ import {
 
 import NotificationManager from "react-notifications/lib/NotificationManager"
 
-const initalState={
+const initialState={
     isAdmin:false,
     username:null,
     pass:null,
@@ -27,7 +27,11 @@ const initalState={
     cartTotal:null,
     loading:false,
     displayMode:false,
-    userAddress:null
+    userAddress:null,
+    paymentInfo:{
+        type:null,
+        value:null
+    }
 
     // cartItem => book props+qty+subtotal
     // order    => info+cartItemsprops+status+
@@ -55,9 +59,9 @@ export const getAllBooks=createAsyncThunk('/main/getAllBooks',async ()=>{
 })
 
 export const placeOrder=createAsyncThunk('/main/placeOrder',async (arg,{dispatch,getState})=>{
-    let {cart,cartTotal,username,userAddress}=getState().main
+    let {cart,cartTotal,username,userAddress,paymentInfo}=getState().main
     console.log("In place order")
-    const res=await httpPlaceOrder(cart,cartTotal,username,userAddress)
+    const res=await httpPlaceOrder(cart,cartTotal,username,userAddress,paymentInfo)
     console.log(res)
     return res
 })
@@ -79,6 +83,12 @@ export const getAllOrders=createAsyncThunk('/main/getAllOrders',async (arg,{disp
     return res
 })
 
+export const updateOrder=createAsyncThunk('/main/updateOrder',async ({id,newStatus})=>{
+    console.log("new state"+newStatus)
+    const res=await httpUpdateOrderStatus(id,newStatus=="success"?true:false)
+    return res
+})
+
 export const validateLogin=createAsyncThunk('main/validateLogin',async ({username,password},{dispatch})=>{
     dispatch(setUserInfo({username:username,password:password}))
     const res=await httpValidateLogin(username,password)
@@ -97,11 +107,14 @@ export const deleteBook=createAsyncThunk('/main/deleteBook',async ({title})=>{
 
 export const saveBook=createAsyncThunk('/main/modifyBook',async ({modTitle,modBook,modified},{dispatch})=>{
     let res=null
+    console.log("save Book called with")
+    console.log({modTitle,modBook,modified})
     
     if(modified)
         res=await httpUpdateBook(modTitle,modBook)
     else
         res=await httpAddBook(modBook)
+
     dispatch(showMsg({msg:"Book catalog updated refresh",type:"info"}))
     return res
 })
@@ -109,7 +122,7 @@ export const saveBook=createAsyncThunk('/main/modifyBook',async ({modTitle,modBo
 
 const mainSlice= createSlice({
     name:"main",
-    initialState:initalState,
+    initialState:initialState,
     reducers:{
         // decide on all reducers here
         setLoader:(state,action)=>{
@@ -134,9 +147,13 @@ const mainSlice= createSlice({
             state.isAdmin=false
             state.username=null
             state.password=null
+            state={...initialState}
         },
         setCartTotal:(state,action)=>{
             state.cartTotal=action.payload
+        },
+        setPaymentInfo:(state,action)=>{
+            state.paymentInfo=action.payload
         },
         setUserAddress:(state,action)=>{
             state.userAddress=action.payload
@@ -237,6 +254,7 @@ const mainSlice= createSlice({
             })
             .addCase(saveBook.fulfilled,(state,action)=>{
                 console.log("Saved ")
+                state.viewingBook=null
             })
     }
 })
@@ -246,7 +264,7 @@ export const { setLoader,setViewBook,setAdmin,
     showMsg,setUserInfo,logout,
     addToCart,setCartTotal,setOrders,
     removeCartItem,setCartItems,toggleDisplayMode,
-    setUserAddress
+    setUserAddress,setPaymentInfo
     
  }=mainSlice.actions
 export default mainSlice.reducer
