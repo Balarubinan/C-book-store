@@ -15,6 +15,11 @@ function Home() {
   }
 
   useEffect(()=>{
+    // let configObj=localStorage.getItem('config')
+    // if(configObj){
+    //     configObj=JSON.parse(configObj)
+    //     dispatch(validateLogin({...configObj}))
+    // }
     dispatch(getAllBooks())
   },[])
 
