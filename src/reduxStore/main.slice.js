@@ -84,9 +84,9 @@ export const getAllOrders=createAsyncThunk('/main/getAllOrders',async (arg,{disp
 })
 
 export const updateOrder=createAsyncThunk('/main/updateOrder',async ({id,newStatus})=>{
-    console.log("new state"+newStatus)
-    const res=await httpUpdateOrderStatus(id,newStatus=="success"?true:false)
-    return res
+    console.log("new state"+newStatus+id)
+    const res=await httpUpdateOrderStatus(id,newStatus)
+    return {...res,status:newStatus,orderId:id}
 })
 
 export const validateLogin=createAsyncThunk('main/validateLogin',async ({username,password},{dispatch})=>{
@@ -247,6 +247,15 @@ const mainSlice= createSlice({
             .addCase(cancelOrder.fulfilled,(state,action)=>{
                 state.order=state.order.filter(order=>order.id!=action.payload.id)
                 console.log("Order cancleed!")
+            })
+            .addCase(updateOrder.fulfilled,(state,action)=>{
+                let {orderId,newStatus}=action.payload
+                state.order=state.order.map(order=>{
+                    if(order.id==orderId)
+                    return {...order,status:newStatus}
+                    else
+                    return order
+                })
             })
             .addCase(deleteBook.fulfilled,(state,action)=>{
                 state.books=state.books.filter(book=>book.title!=action.payload.title)

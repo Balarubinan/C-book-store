@@ -151,21 +151,23 @@ export const httpUpdateOrderStatus=(orderId,status)=>{
 
     if(!isProd){
         console.log("status change"+status)
+        let changeOrder=demoOrders.find(o=>o.id==orderId)
+        changeOrder.status=status
+        demoOrders=demoOrders.filter(order=>order.id!=orderId)
+        demoOrders.push(changeOrder)
+        // demoOrders.
         // demoOrders=demoOrders.map(order=>{
-        //     if(order.id==orderId){
-                
+        //     if(+order.id==+orderId){
         //         order.status=status?"success":"rejected"
-        //         console.log(JSON.stringify(order)+
-        //         "ddd")
-        //         console.log("ddd")
-        //         return order
         //     }
         //     return order
         // })
-        let changeInd=demoOrders.findIndex(o=>o.id==orderId)
-        console.log(changeInd)
-        demoOrders[changeInd].status=status?"success":"rejected"
-        console.log(demoOrders)
+        // let changeInd=demoOrders.findIndex(o=>o.id==orderId)
+        // console.log(changeInd)
+        // demoOrders[changeInd].status=status?"success":"rejected"
+        // console.log(demoOrders)
+
+        // demoOrders=demoOrders.map(order=>{return({...order,status:"success"})})
         updateLocalStore()
         return promiseCreator({status:"success"})
     }else{

@@ -34,6 +34,7 @@ function Order() {
   }
 
   const handleRejectOrder=(id)=>{
+    console.log(typeof id)
     dispatch(updateOrder({id:id,newStatus:"rejected"}))
     dispatch(showMsg({msg:"Order Rejected",type:"success"}))
   }
@@ -47,7 +48,8 @@ function Order() {
     <div className='row'>
       {id&&curBooks&&<Cart orderMode={true} cartItems={curBooks}/>}
       {orders.length>0&&<div  className='h3 pt-3'>
-        YOUR ORDERS
+        {!isAdmin&&<div>YOUR ORDERS</div>}
+        {isAdmin&&<div>CUSTOMER ORDERS</div>}
       </div>}
       <div className="col">
         {!orders.length>0&&<div className='h3 text-secondary p-4'>No orders</div>}

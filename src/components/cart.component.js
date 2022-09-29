@@ -50,8 +50,8 @@ function Cart(props) {
     if(cartItems.length>0){
       let address=addressRef.current.value
       let payNumber=infoRef?.current?.value||""
-      if(address.length>0&&payNumber.length>0){
-        dispatch(setUserAddress())
+      if(address.length>0&&(payMode=="Cash"||payMode!="Cash"&&payNumber.length>0)){
+        dispatch(setUserAddress(address))
         dispatch(setPaymentInfo({type:payMode,number:payNumber}))
         dispatch(setCartTotal(totalAmount))
         dispatch(placeOrder())

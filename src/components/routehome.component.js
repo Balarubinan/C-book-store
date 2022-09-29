@@ -21,7 +21,7 @@ function RouteHome() {
         // loading var does change...but it's too fast
         // for the UI to register
     // comment below line after login implementation!
-        dispatch(validateLogin({username:"admin",password:"admin"}))
+        // dispatch(validateLogin({username:"admin",password:"admin"}))
         // dispatch(validateLogin({username:"jahnavi",password:"jahnavi"}))
     },[])
     return (
