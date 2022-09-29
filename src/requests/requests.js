@@ -1,9 +1,6 @@
 import axios from "axios";
-// import demoData from './data/demoData.json'
+
 import demoData from './data/demoDataWDesc.json'
-
-// import demoData from './data/demoDataLatest.json'
-
 import demoDataOrders from './data/demoOrderData.json'
 
 const baseUrl="http://ServerUrlhere"
