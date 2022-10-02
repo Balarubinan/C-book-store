@@ -26,7 +26,10 @@ function AddBook(props) {
   )
 
   // saving this bcoz it acts as a key for the old book record
-  let originalTitle=tempBook.title
+  // BUG : this changes reactively hence won't work
+  // let originalTitle=tempBook.title.slice()
+  let [originalTitle,setOriginalTitle]=useState(tempBook.title)
+  console.log("ordiginal title is "+originalTitle)
   
 
   const handleFieldChange=(e,fieldName,prevValue)=>{
@@ -41,11 +44,17 @@ function AddBook(props) {
   }
 
   const handleSaveBook=()=>{
+
     console.log({
       modTitle:originalTitle!=''?originalTitle:tempBook.title,
       modBook:tempBook
     })
+    if(tempBook.title==''){
+      dispatch(showMsg({msg:"Title required",type:"error"}))
+      return 
+    }
     dispatch(saveBook({
+      // modTitle:originalTitle!=''?originalTitle:tempBook.title,
       modTitle:originalTitle!=''?originalTitle:tempBook.title,
       modBook:{
         ...tempBook,

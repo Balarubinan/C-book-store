@@ -11,15 +11,16 @@ import {
     httpRegisterUser,
     httpCancelOrder,
     httpDeleteBook
-} from '../requests/requests'
+// } from '../requests/requests'
+} from '../requests/requestsnew'
 
 import NotificationManager from "react-notifications/lib/NotificationManager"
 
 const initialState={
-    isAdmin:false,
-    username:null,
-    pass:null,
-    isLoggedIn:false,
+    isAdmin:localStorage.getItem('isAdmin')||false,
+    username:localStorage.getItem('username')||null,
+    pass:localStorage.getItem('pass')||null,
+    isLoggedIn:localStorage.getItem('isLoggedIn')||false,
     books:[],
     cart:[],
     order:[],
@@ -147,6 +148,9 @@ const mainSlice= createSlice({
             state.isAdmin=false
             state.username=null
             state.password=null
+            // add to clear persisted store
+            localStorage.clear()
+
             state={...initialState}
         },
         setCartTotal:(state,action)=>{
@@ -213,7 +217,10 @@ const mainSlice= createSlice({
             .addCase(getAllBooks.fulfilled,(state,action)=>{
                 console.log("fulfilled books")
                 console.log(action.payload)
-                state.books=action.payload
+                // action.payload is now "action.payload.data"
+                // change those on everything
+                // and also check how to handle the arrays
+                state.books=action.payload.data
                 state.loading=false
             })
             .addCase(getAllBooks.rejected,(state,action)=>{
@@ -222,9 +229,17 @@ const mainSlice= createSlice({
                 state.books=null
             })
             .addCase(validateLogin.fulfilled,(state,action)=>{
-                let {status,isAdmin}=action.payload
+                let {status,isAdmin}=action.payload.data
                 state.isLoggedIn=status=="success"?true:false
                 state.isAdmin=isAdmin
+                console.log(action.payload.data)
+
+                // added to persist login on refresh
+                localStorage.setItem('isLoggedIn',state.isLoggedIn)
+                localStorage.setItem('isAdmin',state.isAdmin)
+                localStorage.setItem('username',state.username)
+                localStorage.setItem('password',state.pass)
+
                 console.log("im herhe"+JSON.stringify(action.payload))
             })
             .addCase(validateLogin.rejected,(state,action)=>{
@@ -233,7 +248,7 @@ const mainSlice= createSlice({
                 state.password=null
             })
             .addCase(getAllOrders.fulfilled,(state,action)=>{
-                state.order=action.payload
+                state.order=action.payload.data
             })
             .addCase(placeOrder.fulfilled,(state,action)=>{
                 state.cart=[]
@@ -249,7 +264,7 @@ const mainSlice= createSlice({
                 console.log("Order cancleed!")
             })
             .addCase(updateOrder.fulfilled,(state,action)=>{
-                let {orderId,newStatus}=action.payload
+                let {orderId,newStatus}=action.payload.data
                 state.order=state.order.map(order=>{
                     if(order.id==orderId)
                     return {...order,status:newStatus}
@@ -259,7 +274,7 @@ const mainSlice= createSlice({
             })
             .addCase(deleteBook.fulfilled,(state,action)=>{
                 state.books=state.books.filter(book=>book.title!=action.payload.title)
-                console.log("Book deleted "+action.payload.title)
+                console.log("Book deleted "+action.payload.data.title)
             })
             .addCase(saveBook.fulfilled,(state,action)=>{
                 console.log("Saved ")
