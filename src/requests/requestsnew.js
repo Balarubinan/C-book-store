@@ -60,6 +60,6 @@ export const httpValidateLogin=(username,password)=>{
 }
 
 export const httpRegisterUser=(username,password)=>{
-    return makePostReq("/registeruser",{username:username,password:password})
+    return makePostReq("/user/register",{username:username,password:password})
 }
 

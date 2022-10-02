@@ -17,10 +17,10 @@ import {
 import NotificationManager from "react-notifications/lib/NotificationManager"
 
 const initialState={
-    isAdmin:localStorage.getItem('isAdmin')||false,
+    isAdmin:localStorage.getItem('isAdmin')=="true"||false,
     username:localStorage.getItem('username')||null,
     pass:localStorage.getItem('pass')||null,
-    isLoggedIn:localStorage.getItem('isLoggedIn')||false,
+    isLoggedIn:localStorage.getItem('isLoggedIn')=="true"||false,
     books:[],
     cart:[],
     order:[],
